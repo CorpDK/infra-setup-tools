@@ -1,0 +1,65 @@
+#cloud-config
+
+hostname: {{ machine_id }}
+fqdn: {{ ddns_host }}
+create_hostname_file: true
+prefer_fqdn_over_hostname: true
+manage_etc_hosts: false
+
+packages:
+- avahi-daemon
+- pollinate
+- apt-transport-https
+- ca-certificates
+- curl
+- gnupg
+- lsb-release
+- screenfetch
+- python3
+- git
+package_update: true
+package_upgrade: true
+package_reboot_if_required: true
+apt:
+  conf: |
+    Acquire {
+      Check-Date "false";
+    };
+
+users:{% for u in users %}
+- name: {{ u.username }}{% if u.sudo %}
+  groups: users,adm,dialout,audio,netdev,video,plugdev,cdrom,games,input,gpio,spi,i2c,render,sudo
+  sudo:{% if u.password %}
+    - ALL=(ALL:ALL) ALL{% else %}
+    - ALL=(ALL) NOPASSWD:ALL{% endif %}{% else %}
+  groups: users,adm,dialout,audio,netdev,video,plugdev,cdrom,games,input,gpio,spi,i2c,render{% endif %}
+  shell: /bin/bash
+  ssh-import-id: "gh:{{ u.github_username }}"{% if u.password %}
+  lock_passwd: false
+  passwd: {{ u.password }}{% endif %}{% endfor %}
+
+ssh_pwauth: false
+ssh:
+  emit_keys_to_console: false
+
+keyboard:
+  model: pc105
+  layout: us
+locale: en_US.UTF-8
+
+# swap:
+#   filename: /swapfile
+#   size: 8G
+#   maxsize: 8G
+
+random_seed:
+  file: /dev/urandom
+  command: ["pollinate", "--server=https://entropy.ubuntu.com"]
+  command_required: true
+
+timezone: {{ timezone }}
+
+runcmd:
+  - sed -i '/PermitRootLogin/d' /etc/ssh/sshd_config
+  - echo "PermitRootLogin no" >> /etc/ssh/sshd_config
+  - systemctl restart sshd

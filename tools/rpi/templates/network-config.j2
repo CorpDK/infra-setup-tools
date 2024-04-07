@@ -1,0 +1,15 @@
+version: 2
+renderer: networkd
+wifis:
+  wlan0:
+    dhcp4: true
+    dhcp6: true
+    optional: true
+    access-points:{% for ap in access_points %}
+      "{{ ap.name }}":
+        password: "{{ ap.password }}"{% endfor %}
+ethernets:
+  eth0:
+    dhcp4: true
+    dhcp6: true
+    optional: true
