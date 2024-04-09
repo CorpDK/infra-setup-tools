@@ -1,0 +1,12 @@
+[Unit]
+Description=DDNS Update
+After=network.target
+
+[Service]
+User=root
+WorkingDirectory=/usr/share/corpdk/ddns-service
+ExecStart=/usr/bin/python3 /usr/share/corpdk/ddns-service/ddns.py
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
