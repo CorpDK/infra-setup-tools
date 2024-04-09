@@ -5,7 +5,6 @@ After=network.target
 [Service]
 User=root
 WorkingDirectory=/usr/share/corpdk/ddns-service
-EnvironmentFile=/usr/share/corpdk/ddns-service/.env
 ExecStart=/usr/bin/python3 /usr/share/corpdk/ddns-service/ddns.py
 Restart=on-failure
 
