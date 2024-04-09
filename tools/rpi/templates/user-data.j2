@@ -6,6 +6,10 @@ create_hostname_file: true
 prefer_fqdn_over_hostname: true
 manage_etc_hosts: false
 
+updates:
+  network:
+    when: ['boot']
+
 packages:
 - avahi-daemon
 - pollinate
@@ -29,12 +33,11 @@ apt:
 users:{% for u in users %}
 - name: {{ u.username }}{% if u.sudo %}
   groups: users,adm,dialout,audio,netdev,video,plugdev,cdrom,games,input,gpio,spi,i2c,render,sudo
-  sudo:{% if u.password %}
-    - ALL=(ALL:ALL) ALL{% else %}
-    - ALL=(ALL) NOPASSWD:ALL{% endif %}{% else %}
+  sudo: {% if u.password %}ALL=(ALL:ALL) ALL{% else %}ALL=(ALL) NOPASSWD:ALL{% endif %}{% else %}
   groups: users,adm,dialout,audio,netdev,video,plugdev,cdrom,games,input,gpio,spi,i2c,render{% endif %}
   shell: /bin/bash
-  ssh-import-id: "gh:{{ u.github_username }}"{% if u.password %}
+  ssh_import_id:
+  - "gh:{{ u.github_username }}"{% if u.password %}
   lock_passwd: false
   passwd: {{ u.password }}{% endif %}{% endfor %}
 
