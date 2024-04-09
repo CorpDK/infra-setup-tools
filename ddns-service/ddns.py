@@ -157,13 +157,6 @@ class DDNSAgentv6(object):
         """
         Perform DNS update for all specified hosts.
         """
-        # Access environment variables as a dictionary
-        environment_vars = os.environ
-
-        # Print all key-value pairs
-        for key, value in environment_vars.items():
-            print(f"{key}: {value}")
-
         ip_address = self.my_ipv6_address()
         print("MY IP: %s" % (ip_address))
 
@@ -181,7 +174,7 @@ class DDNSAgentv6(object):
 
         zone_name = ".".join(dns_names[0].split(".")[-2:])
 
-        cf = CloudFlare.CloudFlare()
+        cf = CloudFlare.CloudFlare(token=os.getenv("CLOUDFLARE_API_TOKEN"))
 
         # grab the zone identifier
         try:
