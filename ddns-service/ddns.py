@@ -174,7 +174,13 @@ class DDNSAgentv6(object):
 
         zone_name = ".".join(dns_names[0].split(".")[-2:])
 
-        cf = CloudFlare.CloudFlare(token=os.getenv("CLOUDFLARE_API_TOKEN"))
+        token = os.getenv("CLOUDFLARE_API_TOKEN")
+        if token is not None:
+            print("CLOUDFLARE_API_TOKEN: type: %s ;length: %d" % (type(token), len(token)))
+        else:
+            print("CLOUDFLARE_API_TOKEN: type: %s ;" % (type(token)))
+
+        cf = CloudFlare.CloudFlare(token=token)
 
         # grab the zone identifier
         try:
