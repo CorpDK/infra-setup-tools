@@ -79,7 +79,7 @@ class MachineIDGenerator(object):
         Other methods are described in the class-level docstring.
     """
 
-    def __init__(self, length: int) -> None:
+    def __init__(self, length: int, machine_network: str | None = None, machine_prefix: str | None = None) -> None:
         """
         Initializes the MachineIDGenerator instance with the specified length for the random ID.
 
@@ -87,6 +87,8 @@ class MachineIDGenerator(object):
             length (int): The length of the random ID.
         """
         self.random_id_length = length
+        self.machine_network = machine_network
+        self.machine_prefix = machine_prefix
 
     def random_id_generator(self) -> None:
         """
@@ -268,8 +270,10 @@ class MachineIDGenerator(object):
         Args:
             output_path (str, optional): The output path for the setup script. Defaults to "output".
         """
-        self.machine_network = os.getenv("MACHINE_NETWORK")
-        self.machine_prefix = os.getenv("MACHINE_PREFIX")
+        if self.machine_network is None:
+            self.machine_network = os.getenv("MACHINE_NETWORK")
+        if self.machine_prefix is None:
+            self.machine_prefix = os.getenv("MACHINE_PREFIX")
         self.validate_input()
 
         zone_name = ".".join(self.base_domain.split(".")[-2:])

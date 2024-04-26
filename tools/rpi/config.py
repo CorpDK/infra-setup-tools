@@ -11,8 +11,15 @@ load_dotenv()
 class ConfigGenerator(object):
     """Config Generator"""
 
-    def __init__(self, random_length: int) -> None:
+    def __init__(
+        self,
+        random_length: int,
+        machine_network: str | None = None,
+        machine_prefix: str | None = None,
+    ) -> None:
         self.random_length = random_length
+        self.machine_network = machine_network
+        self.machine_prefix = machine_prefix
 
     def __call__(
         self, number_of_devices: int, input_file: str, output_path: str = "output"
@@ -21,7 +28,9 @@ class ConfigGenerator(object):
             output_dir = os.path.join(
                 output_path, f"device-{i:0{len(str(number_of_devices)) + 1}d}"
             )
-            midgen = MachineIDGenerator(self.random_length)
+            midgen = MachineIDGenerator(
+                self.random_length, self.machine_network, self.machine_prefix
+            )
             midgen(output_dir)
             values = {"machine_id": midgen.machine_id, "ddns_host": midgen.ddns_host}
             jinjarender = JinjaTemplateRenderer(
