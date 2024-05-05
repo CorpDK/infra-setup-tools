@@ -1,4 +1,5 @@
 # This is a Sample File
-keycloak.corpdk.com
-test.corpdk.com
-manager.corpdk.com
+do mac.corpdk.com keycloak.mac.corpdk.com
+do mac.corpdk.com test.mac.corpdk.com
+do mac.corpdk.com manager.mac.corpdk.com
+cf corpdk.com manager.corpdk.com
